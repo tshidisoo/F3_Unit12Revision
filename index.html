@@ -1,0 +1,837 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>A Clever Baby Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Single light theme by design (Tevfik Online School apricot + black).
+   Layout concept: a worksheet "notebook" — a fixed header bar with the unit title and
+   student-name field, two large tab buttons for Part A / Part B, and single-column
+   question cards (two columns on wide screens) each holding one item. A sticky footer
+   bar per section shows the live score once checked. */
+:root{
+  --bg:#fff7e6;
+  --surface:#fffdf8;
+  --surface-2:#fff0d1;
+  --fg:#141210;
+  --muted:#5f5240;
+  --border:#ecd8b0;
+  --accent:#141210;
+  --on-accent:#ffdd9e;
+  --accent-ink:#141210;
+  --accent-2:#8a5d0c;
+  --accent-2-ink:#6b4708;
+  --good:#1f8a4c;
+  --good-bg:#e6f4e9;
+  --bad:#c8402f;
+  --bad-bg:#fbe9e4;
+  /* Tevfik Online School brand: apricot ground, black mark (same in both themes) */
+  --band:#ffdd9e;
+  --band-ink:#010101;
+  --band-muted:#4a3a1c;
+  --band-field:#fffaf0;
+  color-scheme: light;
+}
+*{box-sizing:border-box;}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:'Karla',system-ui,sans-serif;
+  padding-inline:16px;
+  padding-block:0 32px;
+  max-width:980px;
+  margin-inline:auto;
+}
+h1,h2,h3,.display{
+  font-family:'Baloo 2',system-ui,sans-serif;
+  text-wrap:balance;
+  margin:0;
+}
+a{color:var(--accent-2);}
+
+/* ---------- header: Tevfik Online School band ---------- */
+.masthead{
+  background:var(--band);
+  color:var(--band-ink);
+  padding:18px 20px 0;
+  border-radius:0 0 18px 18px;
+  margin-bottom:18px;
+}
+.brand{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px 12px;
+}
+.brand-name{
+  font-family:'Baloo 2',system-ui,sans-serif;
+  font-weight:700;
+  font-size:.95rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--band-ink);
+}
+.eyebrow{
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--band);
+  background:var(--band-ink);
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+}
+.masthead h1{
+  font-size:clamp(1.5rem,4.4vw,2.1rem);
+  font-weight:800;
+  margin-top:10px;
+  color:var(--band-ink);
+}
+.masthead p.sub{
+  color:var(--band-muted);
+  margin-top:4px;
+  font-size:.95rem;
+  max-width:60ch;
+}
+.name-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 18px;
+  margin-top:12px;
+}
+.name-field{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:.85rem;
+  font-weight:600;
+  color:var(--band-ink);
+}
+.name-field input{
+  font-family:'Karla',sans-serif;
+  font-size:.9rem;
+  padding:5px 9px;
+  border-radius:8px;
+  border:1px solid var(--band-ink);
+  background:var(--band-field);
+  color:var(--band-ink);
+  min-width:140px;
+  color-scheme:light;
+}
+.name-field input::placeholder{color:var(--band-muted);opacity:.7;}
+.name-field input:focus-visible{outline:2px solid var(--band-ink);outline-offset:2px;}
+
+/* ---------- tabs ---------- */
+.tabs{
+  display:flex;
+  gap:6px;
+  margin-top:16px;
+  flex-wrap:wrap;
+}
+.tab-btn{
+  font-family:'Baloo 2',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  padding:9px 16px;
+  border-radius:12px 12px 0 0;
+  border:none;
+  background:transparent;
+  color:var(--band-ink);
+  cursor:pointer;
+}
+.tab-btn:hover{background:rgba(1,1,1,.07);}
+.tab-btn[aria-selected="true"]{
+  background:var(--bg);
+  color:var(--fg);
+}
+.tab-btn:focus-visible{outline:2px solid var(--band-ink);outline-offset:-3px;}
+
+/* ---------- section ---------- */
+.panel{display:none;}
+.panel.active{display:block;}
+.section-head{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px 18px;
+  margin-bottom:16px;
+}
+.section-head h2{font-size:1.15rem;color:var(--fg);}
+.section-head p{color:var(--muted);font-size:.88rem;margin-top:3px;max-width:58ch;}
+.word-bank{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:10px;
+}
+.word-bank span{
+  background:var(--surface-2);
+  color:var(--accent-2-ink);
+  border:1px solid var(--border);
+  font-size:.8rem;
+  font-weight:600;
+  padding:3px 10px;
+  border-radius:999px;
+}
+
+.teacher-toggle{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:.82rem;
+  color:var(--muted);
+  white-space:nowrap;
+}
+.switch{
+  position:relative;
+  width:38px;height:22px;
+  flex-shrink:0;
+}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;}
+.switch .track{
+  position:absolute;inset:0;
+  background:var(--border);
+  border-radius:999px;
+  transition:background .15s;
+}
+.switch .thumb{
+  position:absolute;top:2px;left:2px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--surface);
+  box-shadow:0 1px 2px rgba(0,0,0,.25);
+  transition:left .15s;
+}
+.switch input:checked + .track{background:var(--accent-2);}
+.switch input:checked + .track + .thumb{left:18px;}
+.switch input:focus-visible + .track{outline:2px solid var(--accent-2);outline-offset:2px;}
+
+.passage{
+  background:var(--surface-2);
+  border:1px dashed var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  margin-bottom:16px;
+  font-size:.96rem;
+  line-height:1.55;
+}
+.passage h3{font-size:.95rem;color:var(--accent-2-ink);margin-bottom:6px;}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+@media (max-width:620px){
+  .grid{grid-template-columns:1fr;}
+}
+.q-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px 14px;
+  min-width:0;
+}
+.q-card.correct{border-color:var(--good);background:var(--good-bg);}
+.q-card.incorrect{border-color:var(--bad);background:var(--bad-bg);}
+.q-top{
+  display:flex;
+  gap:8px;
+  align-items:baseline;
+}
+.q-num{
+  font-family:'Baloo 2',sans-serif;
+  font-weight:700;
+  color:var(--accent-2);
+  font-size:.95rem;
+  flex-shrink:0;
+}
+.q-prompt{font-size:.93rem;line-height:1.42;}
+.q-tag{
+  font-size:.66rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:block;
+  margin-top:2px;
+}
+.options{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:9px;
+}
+.opt{
+  position:relative;
+}
+.opt input{
+  position:absolute;
+  opacity:0;
+  width:100%;height:100%;
+  cursor:pointer;
+  margin:0;
+}
+.opt label{
+  display:block;
+  font-size:.86rem;
+  font-weight:600;
+  padding:6px 12px;
+  border-radius:9px;
+  border:1px solid var(--border);
+  background:var(--surface-2);
+  color:var(--fg);
+  cursor:pointer;
+}
+.opt input:checked + label{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:var(--on-accent);
+}
+.opt input:focus-visible + label{outline:2px solid var(--accent-2);outline-offset:2px;}
+
+.fill-row{margin-top:9px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.fill-row input[type="text"]{
+  font-family:'Karla',sans-serif;
+  font-size:.9rem;
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--surface-2);
+  color:var(--fg);
+  width:150px;
+  max-width:100%;
+}
+.fill-row input:focus-visible{outline:2px solid var(--accent-2);outline-offset:1px;}
+
+textarea.open-answer{
+  width:100%;
+  margin-top:9px;
+  font-family:'Karla',sans-serif;
+  font-size:.88rem;
+  padding:8px 10px;
+  border-radius:9px;
+  border:1px solid var(--border);
+  background:var(--surface-2);
+  color:var(--fg);
+  resize:vertical;
+  min-height:46px;
+}
+textarea:focus-visible{outline:2px solid var(--accent-2);outline-offset:1px;}
+
+.feedback{
+  margin-top:8px;
+  font-size:.8rem;
+  font-weight:600;
+}
+.feedback.good{color:var(--good);}
+.feedback.bad{color:var(--bad);}
+
+.answer-reveal{
+  margin-top:7px;
+  font-size:.78rem;
+  color:var(--accent-ink);
+  background:var(--surface-2);
+  border-radius:7px;
+  padding:4px 8px;
+  display:inline-block;
+}
+
+.section-foot{
+  position:sticky;
+  bottom:env(safe-area-inset-bottom,0px);
+  margin-top:18px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  box-shadow:0 -6px 18px -14px rgba(0,0,0,.35);
+}
+.btn{
+  font-family:'Baloo 2',sans-serif;
+  font-weight:700;
+  font-size:.92rem;
+  padding:9px 18px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+}
+.btn-primary{background:var(--accent);color:var(--on-accent);}
+.btn-primary:hover{filter:brightness(1.06);}
+.btn-ghost{background:var(--surface-2);color:var(--fg);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--border);}
+.btn:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px;}
+
+.score{
+  font-family:'Baloo 2',sans-serif;
+  font-weight:700;
+  font-size:1.05rem;
+}
+.score .num{color:var(--accent-ink);}
+.score .sub{
+  display:block;
+  font-family:'Karla',sans-serif;
+  font-weight:500;
+  font-size:.74rem;
+  color:var(--muted);
+}
+
+footer.note{
+  margin-top:26px;
+  padding-top:14px;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:.78rem;
+  line-height:1.5;
+}
+</style>
+
+<div class="masthead">
+  <div class="brand"><span class="brand-name">Tevfik Online School</span><span class="eyebrow">Family and Friends · Unit 12</span></div>
+  <h1>A Clever Baby<span>!</span> — Practice &amp; Revision</h1>
+  <p class="sub">Describing people (old, young, handsome, pretty, short, tall, shy, friendly) and the past simple of <em>be</em> and <em>have</em> — was/were, wasn't/weren't, had/didn't have.</p>
+  <div class="name-row">
+    <label class="name-field">Name <input type="text" id="studentName" placeholder="Your name"></label>
+    <label class="name-field">Date <input type="text" id="studentDate" placeholder="dd/mm/yyyy" style="min-width:110px"></label>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Exercise parts">
+    <button class="tab-btn" id="tabA" role="tab" aria-selected="true" aria-controls="panelA">Part A · This Page</button>
+    <button class="tab-btn" id="tabB" role="tab" aria-selected="false" aria-controls="panelB">Part B · Revision</button>
+  </div>
+</div>
+
+<main>
+  <section id="panelA" class="panel active" role="tabpanel" aria-labelledby="tabA">
+    <div class="section-head">
+      <div>
+        <h2>Part A — Practice this page's words and grammar</h2>
+        <p>30 questions straight from this unit: the describing-people words, and was/were/wasn't/weren't/had/didn't have.</p>
+        <div class="word-bank" id="wordBankA"></div>
+      </div>
+      <label class="teacher-toggle"><span class="switch"><input type="checkbox" id="revealA"><span class="track"></span><span class="thumb"></span></span>Teacher: show answers</label>
+    </div>
+    <div class="grid" id="gridA"></div>
+    <div class="section-foot">
+      <div class="score" id="scoreA">Not checked yet<span class="sub">Answer the questions, then press Check</span></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" id="resetA">Reset</button>
+        <button class="btn btn-primary" id="checkA">Check my answers</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="panelB" class="panel" role="tabpanel" aria-labelledby="tabB">
+    <div class="section-head">
+      <div>
+        <h2>Part B — Revision</h2>
+        <p>30 questions that go further: a reading passage, more describing-people practice, and mixed grammar review — in the style of British Council–type grammar exercises.</p>
+      </div>
+      <label class="teacher-toggle"><span class="switch"><input type="checkbox" id="revealB"><span class="track"></span><span class="thumb"></span></span>Teacher: show answers</label>
+    </div>
+    <div class="passage">
+      <h3>Read: Ben's grandparents</h3>
+      <p id="passageText"></p>
+    </div>
+    <div class="grid" id="gridB"></div>
+    <div class="section-foot">
+      <div class="score" id="scoreB">Not checked yet<span class="sub">Answer the questions, then press Check</span></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" id="resetB">Reset</button>
+        <button class="btn btn-primary" id="checkB">Check my answers</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="note"><strong>Tevfik Online School</strong> · English · Family and Friends, Unit 12.<br>Questions 29–30 in Part B are short written answers — there's no single right answer, so your teacher will check those by hand. Everything else is marked for you the moment you press Check.</footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var wordsA = ["old","young","handsome","pretty","short","tall","shy","friendly"];
+
+  var passage = "Last month, Ben visited his grandparents and looked at their old wedding photos. "
+    + "In one photo, his grandfather was young and quite handsome, with short curly hair. He wasn't very "
+    + "tall, but he was strong. His grandmother was pretty, with long straight hair, and she had a big smile. "
+    + "They weren't rich back then, and they didn't have a car, so they had a small motorbike instead. They "
+    + "were shy with each other at first, but they soon became good friends. Ben's grandmother said, "
+    + "“We were very happy, even though we didn't have much money.”";
+
+  // ---- Part A: 30 items, all multiple choice ----
+  var partA = [
+    {t:"mcq", p:"What is the opposite of <strong>old</strong>?", o:["young","short","shy"], a:"young"},
+    {t:"mcq", p:"What is the opposite of <strong>tall</strong>?", o:["short","pretty","friendly"], a:"short"},
+    {t:"mcq", p:"What is the opposite of <strong>young</strong>?", o:["old","handsome","tall"], a:"old"},
+    {t:"mcq", p:"What is the opposite of <strong>short</strong>?", o:["tall","shy","old"], a:"tall"},
+    {t:"mcq", p:"Which word describes someone who feels nervous meeting new people?", o:["shy","friendly","handsome"], a:"shy"},
+    {t:"mcq", p:"Which word describes someone who is warm and easy to talk to?", o:["friendly","shy","pretty"], a:"friendly"},
+    {t:"mcq", p:"Which word means a good-looking boy or man?", o:["handsome","pretty","young"], a:"handsome"},
+    {t:"mcq", p:"Which word means a good-looking girl or woman?", o:["pretty","handsome","tall"], a:"pretty"},
+    {t:"mcq", tag:"was / were", p:"My grandad ___ a pilot when he was young.", o:["was","were"], a:"was"},
+    {t:"mcq", tag:"was / were", p:"My parents ___ at a wedding last weekend.", o:["was","were"], a:"were"},
+    {t:"mcq", tag:"was / were", p:"The soup ___ too hot to eat.", o:["was","were"], a:"was"},
+    {t:"mcq", tag:"was / were", p:"We ___ really excited about the trip.", o:["was","were"], a:"were"},
+    {t:"mcq", tag:"was / were", p:"I ___ very shy on my first day of school.", o:["was","were"], a:"was"},
+    {t:"mcq", tag:"was / were", p:"You and your cousin ___ at the park this morning.", o:["was","were"], a:"were"},
+    {t:"mcq", tag:"wasn't / weren't", p:"It ___ raining — the sun was shining all day.", o:["wasn't","weren't"], a:"wasn't"},
+    {t:"mcq", tag:"wasn't / weren't", p:"My shoes ___ in my bag — I left them at home!", o:["wasn't","weren't"], a:"weren't"},
+    {t:"mcq", tag:"wasn't / weren't", p:"The baby ___ asleep — she was wide awake.", o:["wasn't","weren't"], a:"wasn't"},
+    {t:"mcq", tag:"wasn't / weren't", p:"We ___ ready for the test.", o:["wasn't","weren't"], a:"weren't"},
+    {t:"mcq", tag:"question", p:"___ you scared of the dark when you were little?", o:["Was","Were"], a:"Were"},
+    {t:"mcq", tag:"question", p:"___ your grandma a singer?", o:["Was","Were"], a:"Was"},
+    {t:"mcq", tag:"had / didn't have", p:"My uncle ___ a motorbike when he was twenty.", o:["had","didn't have"], a:"had"},
+    {t:"mcq", tag:"had / didn't have", p:"I ___ any brothers or sisters — I was an only child.", o:["had","didn't have"], a:"didn't have"},
+    {t:"mcq", tag:"had / didn't have", p:"The dog ___ a wonderful time at the beach.", o:["had","didn't have"], a:"had"},
+    {t:"mcq", tag:"had / didn't have", p:"She ___ a phone when she was seven — phones weren't common then.", o:["had","didn't have"], a:"didn't have"},
+    {t:"mcq", tag:"had / didn't have", p:"We ___ a delicious picnic in the garden.", o:["had","didn't have"], a:"had"},
+    {t:"mcq", tag:"had / didn't have", p:"He ___ a beard — he was too young to grow one.", o:["had","didn't have"], a:"didn't have"},
+    {t:"mcq", tag:"read and circle", p:"Last Sunday, the family ___ at the beach, not at home.", o:["were","weren't"], a:"were"},
+    {t:"mcq", tag:"read and circle", p:"The sea ___ warm and clear.", o:["was","wasn't"], a:"was"},
+    {t:"mcq", tag:"read and circle", p:"The children ___ hungry, so they ate their sandwiches.", o:["were","weren't"], a:"were"},
+    {t:"mcq", tag:"read and circle", p:"By the end of the day, everyone ___ happy and tired.", o:["was","wasn't"], a:"was"}
+  ];
+
+  // ---- Part B: 30 items, mixed types ----
+  var partB = [
+    {t:"tf", tag:"true or false", p:"Ben looked at <em>new</em> photos of his grandparents.", a:"false"},
+    {t:"tf", tag:"true or false", p:"Ben's grandfather was handsome in the photo.", a:"true"},
+    {t:"tf", tag:"true or false", p:"Ben's grandfather was very tall.", a:"false"},
+    {t:"tf", tag:"true or false", p:"Ben's grandmother had short hair.", a:"false"},
+    {t:"tf", tag:"true or false", p:"Ben's grandparents had a car.", a:"false"},
+    {t:"tf", tag:"true or false", p:"Ben's grandparents were happy, even without much money.", a:"true"},
+    {t:"mcq", p:"My older brother loves talking to strangers and making new friends. He is very ___.", o:["friendly","shy"], a:"friendly"},
+    {t:"mcq", p:"My little sister hides behind Mum when she meets new people. She is very ___.", o:["shy","friendly"], a:"shy"},
+    {t:"mcq", p:"My great-grandmother is 95. She is very ___.", o:["old","young"], a:"old"},
+    {t:"mcq", p:"My baby cousin is only 3 months old. She is very ___.", o:["young","old"], a:"young"},
+    {t:"mcq", p:"My cousin plays basketball — he is 2 metres tall! He is very ___.", o:["tall","short"], a:"tall"},
+    {t:"mcq", p:"My little brother is the smallest in his class. He is quite ___.", o:["short","tall"], a:"short"},
+    {t:"fill", tag:"was / were / wasn't / weren't", p:"My cousins ___ born in Canada.", acc:["were"]},
+    {t:"fill", tag:"was / were / wasn't / weren't", p:"I ___ at the concert last night — I had a cold.", acc:["wasnt","wasn't"]},
+    {t:"fill", tag:"was / were / wasn't / weren't", p:"___ it windy on your trip?", acc:["was"]},
+    {t:"fill", tag:"was / were / wasn't / weren't", p:"The traffic ___ terrible this morning, so we were late.", acc:["was"]},
+    {t:"fill", tag:"was / were / wasn't / weren't", p:"They ___ at the cinema when the fire alarm rang — they were at home.", acc:["werent","weren't"]},
+    {t:"fill", tag:"was / were / wasn't / weren't", p:"___ your dad at your football match on Saturday?", acc:["was"]},
+    {t:"fill", tag:"was / were / wasn't / weren't", p:"We ___ exhausted after the hike.", acc:["were"]},
+    {t:"fill", tag:"was / were / wasn't / weren't", p:"The exam ___ difficult — it was actually quite easy!", acc:["wasnt","wasn't"]},
+    {t:"fill", tag:"had / didn't have", p:"We ___ an amazing time at the festival.", acc:["had"]},
+    {t:"fill", tag:"had / didn't have", p:"She ___ enough money for the ticket, so she stayed home.", acc:["didnt have","didn't have"]},
+    {t:"fill", tag:"had / didn't have", p:"The kids ___ so much fun at the fair.", acc:["had"]},
+    {t:"fill", tag:"had / didn't have", p:"He ___ a key, so he couldn't get into the house.", acc:["didnt have","didn't have"]},
+    {t:"mcq", tag:"find the correct sentence", p:"Which sentence is correct?", o:["She were young.","She was young.","She is was young."], a:"She was young."},
+    {t:"mcq", tag:"find the correct sentence", p:"Which sentence is correct?", o:["We wasn't at the party.","We weren't at the party.","We not were at the party."], a:"We weren't at the party."},
+    {t:"mcq", tag:"find the correct sentence", p:"Which sentence is correct?", o:["Did you had fun?","Did you have fun?","Did you has fun?"], a:"Did you have fun?"},
+    {t:"mcq", tag:"find the correct sentence", p:"Which sentence is correct?", o:["They didn't had any pets.","They didn't have any pets.","They not had any pets."], a:"They didn't have any pets."},
+    {t:"open", tag:"write about you", p:"Write a true sentence: “When I was younger, I ___.” (use was/were, had, or a word from this unit)"},
+    {t:"open", tag:"write about you", p:"Write a true sentence: “Last weekend, I ___.” (use was/were or had)"}
+  ];
+
+  function norm(s){
+    return (s || "").toString().trim().toLowerCase().replace(/['’]/g,"");
+  }
+
+  function buildWordBank(){
+    var bank = document.getElementById("wordBankA");
+    wordsA.forEach(function(w){
+      var span = document.createElement("span");
+      span.textContent = w;
+      bank.appendChild(span);
+    });
+  }
+
+  function renderGrid(items, gridId, prefix){
+    var grid = document.getElementById(gridId);
+    items.forEach(function(item, idx){
+      var n = idx + 1;
+      var id = prefix + n;
+      var card = document.createElement("div");
+      card.className = "q-card";
+      card.dataset.id = id;
+
+      var top = document.createElement("div");
+      top.className = "q-top";
+      var numEl = document.createElement("div");
+      numEl.className = "q-num";
+      numEl.textContent = n + ".";
+      var promptWrap = document.createElement("div");
+      promptWrap.style.minWidth = "0";
+      var promptEl = document.createElement("p");
+      promptEl.className = "q-prompt";
+      promptEl.innerHTML = item.p;
+      promptWrap.appendChild(promptEl);
+      if(item.tag){
+        var tagEl = document.createElement("span");
+        tagEl.className = "q-tag";
+        tagEl.textContent = item.tag;
+        promptWrap.appendChild(tagEl);
+      }
+      top.appendChild(numEl);
+      top.appendChild(promptWrap);
+      card.appendChild(top);
+
+      if(item.t === "mcq"){
+        var opts = document.createElement("div");
+        opts.className = "options";
+        item.o.forEach(function(optText, oi){
+          var wrap = document.createElement("div");
+          wrap.className = "opt";
+          var inputId = id + "_o" + oi;
+          var input = document.createElement("input");
+          input.type = "radio";
+          input.name = id;
+          input.id = inputId;
+          input.value = optText;
+          var label = document.createElement("label");
+          label.setAttribute("for", inputId);
+          label.textContent = optText;
+          wrap.appendChild(input);
+          wrap.appendChild(label);
+          opts.appendChild(wrap);
+        });
+        card.appendChild(opts);
+      } else if(item.t === "tf"){
+        var opts2 = document.createElement("div");
+        opts2.className = "options";
+        ["True","False"].forEach(function(optText){
+          var wrap = document.createElement("div");
+          wrap.className = "opt";
+          var inputId = id + "_" + optText;
+          var input = document.createElement("input");
+          input.type = "radio";
+          input.name = id;
+          input.id = inputId;
+          input.value = optText.toLowerCase();
+          var label = document.createElement("label");
+          label.setAttribute("for", inputId);
+          label.textContent = optText;
+          wrap.appendChild(input);
+          wrap.appendChild(label);
+          opts2.appendChild(wrap);
+        });
+        card.appendChild(opts2);
+      } else if(item.t === "fill"){
+        var row = document.createElement("div");
+        row.className = "fill-row";
+        var input = document.createElement("input");
+        input.type = "text";
+        input.id = id + "_fill";
+        input.autocomplete = "off";
+        input.setAttribute("aria-label", "Your answer");
+        row.appendChild(input);
+        card.appendChild(row);
+      } else if(item.t === "open"){
+        var ta = document.createElement("textarea");
+        ta.className = "open-answer";
+        ta.id = id + "_open";
+        ta.setAttribute("aria-label", "Your answer");
+        card.appendChild(ta);
+      }
+
+      var fb = document.createElement("div");
+      fb.className = "feedback";
+      fb.id = id + "_fb";
+      fb.hidden = true;
+      card.appendChild(fb);
+
+      var reveal = document.createElement("div");
+      reveal.className = "answer-reveal";
+      reveal.id = id + "_reveal";
+      reveal.hidden = true;
+      if(item.t === "mcq" || item.t === "tf"){
+        reveal.textContent = "Answer: " + (item.t === "tf" ? (item.a === "true" ? "True" : "False") : item.a);
+      } else if(item.t === "fill"){
+        reveal.textContent = "Answer: " + item.acc[item.acc.length - 1];
+      } else {
+        reveal.textContent = "Open answer — check for correct grammar.";
+      }
+      card.appendChild(reveal);
+
+      grid.appendChild(card);
+    });
+  }
+
+  function checkSection(items, prefix, scoreElId){
+    var correct = 0, gradable = 0, openCount = 0;
+    items.forEach(function(item, idx){
+      var id = prefix + (idx + 1);
+      var card = document.querySelector('.q-card[data-id="' + id + '"]');
+      var fb = document.getElementById(id + "_fb");
+      card.classList.remove("correct","incorrect");
+
+      if(item.t === "mcq" || item.t === "tf"){
+        gradable++;
+        var sel = document.querySelector('input[name="' + id + '"]:checked');
+        var val = sel ? sel.value : null;
+        var ok = item.t === "tf" ? (val === item.a) : (val === item.a);
+        fb.hidden = false;
+        if(!val){
+          card.classList.add("incorrect");
+          fb.className = "feedback bad";
+          fb.textContent = "No answer selected. Correct: " + (item.t === "tf" ? (item.a === "true" ? "True" : "False") : item.a);
+        } else if(ok){
+          correct++;
+          card.classList.add("correct");
+          fb.className = "feedback good";
+          fb.textContent = "Correct!";
+        } else {
+          card.classList.add("incorrect");
+          fb.className = "feedback bad";
+          fb.textContent = "Not quite. Correct: " + (item.t === "tf" ? (item.a === "true" ? "True" : "False") : item.a);
+        }
+      } else if(item.t === "fill"){
+        gradable++;
+        var inp = document.getElementById(id + "_fill");
+        var v = norm(inp.value);
+        fb.hidden = false;
+        if(!v){
+          card.classList.add("incorrect");
+          fb.className = "feedback bad";
+          fb.textContent = "No answer written. Correct: " + item.acc[item.acc.length - 1];
+        } else if(item.acc.indexOf(v) !== -1){
+          correct++;
+          card.classList.add("correct");
+          fb.className = "feedback good";
+          fb.textContent = "Correct!";
+        } else {
+          card.classList.add("incorrect");
+          fb.className = "feedback bad";
+          fb.textContent = "Not quite. Correct: " + item.acc[item.acc.length - 1];
+        }
+      } else if(item.t === "open"){
+        openCount++;
+        var ta = document.getElementById(id + "_open");
+        fb.hidden = false;
+        if(ta.value.trim()){
+          card.classList.add("correct");
+          fb.className = "feedback good";
+          fb.textContent = "Answered — your teacher will check this one.";
+        } else {
+          card.classList.add("incorrect");
+          fb.className = "feedback bad";
+          fb.textContent = "Not answered yet.";
+        }
+      }
+    });
+    var scoreEl = document.getElementById(scoreElId);
+    var pieces = ['<span class="num">' + correct + ' / ' + gradable + '</span> correct'];
+    scoreEl.innerHTML = pieces[0] + (openCount ? '<span class="sub">Plus ' + openCount + ' written answer' + (openCount>1?'s':'') + ' for your teacher to check</span>' : '<span class="sub">All questions auto-marked</span>');
+  }
+
+  function resetSection(items, prefix, scoreElId){
+    items.forEach(function(item, idx){
+      var id = prefix + (idx + 1);
+      var card = document.querySelector('.q-card[data-id="' + id + '"]');
+      card.classList.remove("correct","incorrect");
+      document.getElementById(id + "_fb").hidden = true;
+      if(item.t === "mcq" || item.t === "tf"){
+        var radios = document.querySelectorAll('input[name="' + id + '"]');
+        radios.forEach(function(r){ r.checked = false; });
+      } else if(item.t === "fill"){
+        document.getElementById(id + "_fill").value = "";
+      } else if(item.t === "open"){
+        document.getElementById(id + "_open").value = "";
+      }
+    });
+    document.getElementById(scoreElId).innerHTML = "Not checked yet<span class=\"sub\">Answer the questions, then press Check</span>";
+  }
+
+  function toggleReveal(items, prefix, show){
+    items.forEach(function(item, idx){
+      var id = prefix + (idx + 1);
+      document.getElementById(id + "_reveal").hidden = !show;
+    });
+  }
+
+  // ---- wire up ----
+  buildWordBank();
+  document.getElementById("passageText").textContent = passage;
+  renderGrid(partA, "gridA", "a");
+  renderGrid(partB, "gridB", "b");
+
+  document.getElementById("checkA").addEventListener("click", function(){ checkSection(partA, "a", "scoreA"); });
+  document.getElementById("checkB").addEventListener("click", function(){ checkSection(partB, "b", "scoreB"); });
+  document.getElementById("resetA").addEventListener("click", function(){ resetSection(partA, "a", "scoreA"); });
+  document.getElementById("resetB").addEventListener("click", function(){ resetSection(partB, "b", "scoreB"); });
+  document.getElementById("revealA").addEventListener("change", function(e){ toggleReveal(partA, "a", e.target.checked); });
+  document.getElementById("revealB").addEventListener("change", function(e){ toggleReveal(partB, "b", e.target.checked); });
+
+  var tabA = document.getElementById("tabA"), tabB = document.getElementById("tabB");
+  var panelA = document.getElementById("panelA"), panelB = document.getElementById("panelB");
+  function showPanel(which){
+    var aActive = which === "a";
+    panelA.classList.toggle("active", aActive);
+    panelB.classList.toggle("active", !aActive);
+    tabA.setAttribute("aria-selected", aActive ? "true" : "false");
+    tabB.setAttribute("aria-selected", !aActive ? "true" : "false");
+  }
+  tabA.addEventListener("click", function(){ showPanel("a"); location.hash = "parta"; });
+  tabB.addEventListener("click", function(){ showPanel("b"); location.hash = "partb"; });
+  if(location.hash === "#partb"){ showPanel("b"); }
+
+  // ---- hot-reload state (best effort; harmless if unavailable) ----
+  function collectState(){
+    var state = { name: document.getElementById("studentName").value, date: document.getElementById("studentDate").value, a:{}, b:{} };
+    function grab(items, prefix, bucket){
+      items.forEach(function(item, idx){
+        var id = prefix + (idx + 1);
+        if(item.t === "mcq" || item.t === "tf"){
+          var sel = document.querySelector('input[name="' + id + '"]:checked');
+          if(sel) bucket[id] = sel.value;
+        } else if(item.t === "fill"){
+          var el = document.getElementById(id + "_fill");
+          if(el && el.value) bucket[id] = el.value;
+        } else if(item.t === "open"){
+          var ta = document.getElementById(id + "_open");
+          if(ta && ta.value) bucket[id] = ta.value;
+        }
+      });
+    }
+    grab(partA, "a", state.a);
+    grab(partB, "b", state.b);
+    return state;
+  }
+  function applyState(state){
+    if(!state) return;
+    if(state.name) document.getElementById("studentName").value = state.name;
+    if(state.date) document.getElementById("studentDate").value = state.date;
+    function fill(items, prefix, bucket){
+      if(!bucket) return;
+      items.forEach(function(item, idx){
+        var id = prefix + (idx + 1);
+        var v = bucket[id];
+        if(v === undefined) return;
+        if(item.t === "mcq" || item.t === "tf"){
+          var el = document.querySelector('input[name="' + id + '"][value="' + CSS.escape(v) + '"]');
+          if(el) el.checked = true;
+        } else if(item.t === "fill"){
+          var fi = document.getElementById(id + "_fill");
+          if(fi) fi.value = v;
+        } else if(item.t === "open"){
+          var ta = document.getElementById(id + "_open");
+          if(ta) ta.value = v;
+        }
+      });
+    }
+    fill(partA, "a", state.a);
+    fill(partB, "b", state.b);
+  }
+  try{
+    if(window.claude && window.claude.hot){
+      window.claude.hot.snapshot(collectState);
+      if(window.claude.hot.ready){ window.claude.hot.ready(applyState); } else { applyState(window.claude.hot.data); }
+    }
+  }catch(e){}
+})();
+</script>
+
+</body></html>
